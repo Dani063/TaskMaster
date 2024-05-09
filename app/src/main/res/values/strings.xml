@@ -3,4 +3,12 @@
     <!--Main Activity-->
     <string name="Btn_Login">Login</string>
     <string name="Btn_Registro">Registro</string>
+    <!-- Actividad Registro -->
+    <string name="CrearCuentaTXT">Crear una cuenta</string>
+    <string name="NombreEt">Nombre</string>
+    <string name="CorreoEt">Correo electronico</string>
+    <string name="ContrasenaEt">Contraseña</string>
+    <string name="ConfirmarContrasenaEt">Confirmar contraseña</string>
+    <string name="RegistrarUsuario">Registrar</string>
+    <string name="Tengounacuenta">Tengo una cuenta</string>
 </resources>
