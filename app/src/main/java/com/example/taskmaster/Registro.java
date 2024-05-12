@@ -60,7 +60,6 @@ public class Registro extends AppCompatActivity {
         RegistrarUsuario = findViewById(R.id.RegistrarUsuario);
         TengounacuentaTXT = findViewById(R.id.Tengounacuenta);
 
-        System.out.println("Traza");
         firebaseAuth = FirebaseAuth.getInstance();
 
         progressDialog = new ProgressDialog(Registro.this);

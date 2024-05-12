@@ -19,6 +19,7 @@
     <string name="BienvenidoPrincipal">Bienvenido</string>
     <string name="NombresPrincipal"> -- </string>
     <string name="CorreoPrincipal"> -- </string>
+    <string name="AgregaNota">+</string>
 
     <!-- LogIn -->
     <string name="CorreoLogin">Correo electronico</string>
@@ -26,5 +27,17 @@
     <string name="LogearUsuario">Entrar</string>
     <string name="NuevoUsuario">No tienes cuenta? Registrate aqui!</string>
     <string name="LoginTXT">Log In</string>
-    
+
+    <!-- Agregar Tarea -->
+    <string name="Uid_Usuario">Uid del Usuario</string>
+    <string name="Correo_usuario">Correo de usuario</string>
+    <string name="Fecha_hora_actual">Fecha y hora actual</string>
+    <string name="Titulo">Titulo</string>
+    <string name="Descripcion">Descripcion</string>
+    <string name="Btn_Calendario">Calendario</string>
+    <string name="Fecha">dd/mm/aaaa</string>
+    <string name="Estado">No finalizado</string>
+    <string name="Btn_RegistraNota">Guardar</string>
+    <string name="CrearTarea">Crear tarea</string>
+
 </resources>
