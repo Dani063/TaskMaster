@@ -7,21 +7,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Login">
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/LoginTXT"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:fontFamily="@font/robotoblack"
+        android:layout_marginTop="15dp"
+        />
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="10dp"/>
+        android:padding="10dp">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="600dp"
-        android:layout_height="600dp"
-        app:lottie_imageAssetsFolder="assets"
-        app:lottie_fileName="Carga.json"
-        app:lottie_loop="true"
-        app:lottie_autoPlay="true"/>
 
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:lottie_imageAssetsFolder="assets"
+            app:lottie_fileName="Login.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"
+            android:layout_marginTop="10dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/CorreoLogin"
+                android:hint="@string/CorreoLogin"
+                android:inputType="textEmailAddress"
+                android:drawableStart="@drawable/mail"
+                android:drawablePadding="10dp"
+                android:padding="15dp"
+                android:fontFamily="@font/robotoblack"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:passwordToggleEnabled="true">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ContrasenaLogin"
+                android:hint="@string/ContrasenaLogin"
+                android:inputType="textPassword"
+                android:drawableStart="@drawable/contrasena"
+                android:drawablePadding="10dp"
+                android:padding="15dp"
+                android:fontFamily="@font/robotoblack"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/LogearUsuario"
+            android:fontFamily="@font/robotoblack"
+            android:id="@+id/LogearUsuario"
+            android:layout_gravity="center"
+            android:textSize="20sp"/>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/NuevoUsuario"
+            android:id="@+id/NuevoUsuario"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/robotoblack"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </RelativeLayout>

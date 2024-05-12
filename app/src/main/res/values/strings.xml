@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">TaskMaster</string>
+
     <!--Main Activity-->
     <string name="Btn_Login">Login</string>
     <string name="Btn_Registro">Registro</string>
+
     <!-- Actividad Registro -->
     <string name="CrearCuentaTXT">Crear una cuenta</string>
     <string name="NombreEt">Nombre</string>
@@ -11,4 +13,18 @@
     <string name="ConfirmarContrasenaEt">Confirmar contraseña</string>
     <string name="RegistrarUsuario">Registrar</string>
     <string name="Tengounacuenta">Tengo una cuenta</string>
+
+    <!-- Menu Principal -->
+    <string name="CerrarSesion">Salir</string>
+    <string name="BienvenidoPrincipal">Bienvenido</string>
+    <string name="NombresPrincipal"> -- </string>
+    <string name="CorreoPrincipal"> -- </string>
+
+    <!-- LogIn -->
+    <string name="CorreoLogin">Correo electronico</string>
+    <string name="ContrasenaLogin">Contraseña</string>
+    <string name="LogearUsuario">Entrar</string>
+    <string name="NuevoUsuario">No tienes cuenta? Registrate aqui!</string>
+    <string name="LoginTXT">Log In</string>
+    
 </resources>

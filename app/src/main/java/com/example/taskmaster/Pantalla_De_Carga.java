@@ -10,7 +10,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class Pantalla_De_Carga extends AppCompatActivity {
+
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +28,29 @@ public class Pantalla_De_Carga extends AppCompatActivity {
             return insets;
         });
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
         int Tiempo = 5000;
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(Pantalla_De_Carga.this, MainActivity.class));
+                VerificarUsuario();
                 finish();
             }
         },Tiempo);
     }
+
+    private void VerificarUsuario(){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(firebaseUser == null){
+            startActivity(new Intent(Pantalla_De_Carga.this, MainActivity.class));
+        }
+
+        else{
+            startActivity(new Intent(Pantalla_De_Carga.this,Menu_Principal.class));
+        }
+    }
+
 }
