@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/Descripcion"
             android:id="@+id/Descripcion"
-            android:inputType="textCapWords"
+            android:inputType="textCapSentences"
             android:textSize="20sp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/robotoblack"
