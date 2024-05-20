@@ -1,5 +1,6 @@
 package ViewHolder;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,7 +12,7 @@ import com.example.taskmaster.R;
 import Objects.Tarea;
 
 public class TareaViewHolder extends RecyclerView.ViewHolder {
-    /*View mView;
+    View mView;
     private TareaViewHolder.ClickListener mClickListener;
 
 
@@ -22,38 +23,52 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
 
     public void setOnClickListener(TareaViewHolder.ClickListener clickListener){
         mClickListener = clickListener;
-    }*/
+    }
 
-    TextView tituloTextView;
-    TextView descripcionTextView;
-    TextView fechaTextView;
-    TextView fechaCreacionTextView;
-    TextView estadoTextView;
+
 
     public TareaViewHolder(@NonNull View itemView) {
         super(itemView);
-        /*mView = itemView;
+        mView = itemView;
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClickListener.onItemClick(v, getAdapterPosition());
+                mClickListener.onItemClick(v, getBindingAdapterPosition());
             }
-        });*/
-        tituloTextView = itemView.findViewById(R.id.tituloTextView);
-        descripcionTextView = itemView.findViewById(R.id.descripcionTextView);
-        fechaTextView = itemView.findViewById(R.id.fechaTextView);
-        fechaCreacionTextView = itemView.findViewById(R.id.fecha_hora_ActualTextView);
-        estadoTextView = itemView.findViewById(R.id.estadoTextView);
+        });
+
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mClickListener.onItemLongClick(v, getBindingAdapterPosition());
+                return false;
+            }
+        });
     }
 
-    //public void SetearDatos()
+    public void SetearDatos(Context context, String titulo, String descripcion, String fecha,
+                            String fechaCreacion, String estado, String tid, String uid){
+        //Declarar vistas
+        TextView tituloItem, descripcionItem, fechaItem, fecha_hora_actualItem, estadoItem,
+                Tid_TareaItem, Uid_UsuarioItem;
 
-    public void bind(Tarea tarea) {
-        tituloTextView.setText(tarea.getTitulo());
-        descripcionTextView.setText(tarea.getDescripcion());
-        fechaTextView.setText(tarea.getFecha());
-        fechaCreacionTextView.setText(tarea.getFechaCreacion());
-        estadoTextView.setText(tarea.getEstado());
+        // Establecer la conexion con el item
+        tituloItem = mView.findViewById(R.id.tituloItem);
+        descripcionItem = mView.findViewById(R.id.descripcionItem);
+        fechaItem = mView.findViewById(R.id.fechaItem);
+        fecha_hora_actualItem = mView.findViewById(R.id.fecha_hora_ActualItem);
+        estadoItem = mView.findViewById(R.id.estadoItem);
+        Tid_TareaItem = mView.findViewById(R.id.Tid_TareaItem);
+        Uid_UsuarioItem = mView.findViewById(R.id.Uid_UsuarioItem);
+
+        //Setear info en el item
+        tituloItem.setText(titulo);
+        descripcionItem.setText(descripcion);
+        fechaItem.setText(fecha);
+        fecha_hora_actualItem.setText(fechaCreacion);
+        estadoItem.setText(estado);
+        Tid_TareaItem.setText(tid);
+        Uid_UsuarioItem.setText(uid);
     }
 }

@@ -2,6 +2,7 @@ package com.example.taskmaster;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -46,8 +47,8 @@ public class Menu_Principal extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference BASE_DE_DATOS;
 
-    LinearLayoutManager linearLayoutManager;
-    FirebaseRecyclerAdapter<Tarea, TareaViewHolder> firebaseRecyclerAdapter;
+    LinearLayoutManager linearLayoutManager; //Modifica forma de listar las notas
+    FirebaseRecyclerAdapter<Tarea, TareaViewHolder> firebaseRecyclerAdapter; //usa un detector de eventos para ver los cambios en la bd de tareas
     FirebaseRecyclerOptions<Tarea> options;
 
     @Override
@@ -61,10 +62,9 @@ public class Menu_Principal extends AppCompatActivity {
             return insets;
         });
         recyclerViewTareas = findViewById(R.id.reciclerViewTareas);
-        recyclerViewTareas.setHasFixedSize(true);
+        //recyclerViewTareas.setHasFixedSize(true); //recycler view adaptara su tamaño a los elementos//Al estar la actividad dentro de un scroll view si se activa esta propiedad hace que no se vean las tareas
         recyclerViewTareas.setLayoutManager(new LinearLayoutManager(this));
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
         BASE_DE_DATOS = FirebaseDatabase.getInstance().getReference("Tareas");
 
         NombresPrincipal = findViewById(R.id.NombresPrincipal);
@@ -76,6 +76,9 @@ public class Menu_Principal extends AppCompatActivity {
         CerrarSesion = findViewById(R.id.CerrarSesion);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        //Listar Tareas usuario
+        ListarTareasUsuarios();
 
         CerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,10 +111,8 @@ public class Menu_Principal extends AppCompatActivity {
                     //Set Datos
                     NombresPrincipal.setText(nombres);
                     CorreoPrincipal.setText(correo);
-                    //Listar Tareas usuario
-                    ListarTareasUsuarios();
                     // Verificación de datos en BASE_DE_DATOS
-                    BASE_DE_DATOS.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                    BASE_DE_DATOS.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
@@ -139,26 +140,45 @@ public class Menu_Principal extends AppCompatActivity {
     private void ListarTareasUsuarios(){
 
         options = new FirebaseRecyclerOptions.Builder<Tarea>()
-                .setQuery(BASE_DE_DATOS.child(firebaseUser.getUid()), Tarea.class)
-                .build();
+                .setQuery(BASE_DE_DATOS, Tarea.class).build();
+        Log.d("DEBUG", "Options set for FirebaseRecyclerAdapter");
+        System.out.println(options.getSnapshots().getClass());
 
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Tarea, TareaViewHolder>(options) {
-
             @Override
             protected void onBindViewHolder(@NonNull TareaViewHolder tareaViewHolder, int i, @NonNull Tarea tarea) {
-                System.out.println("Tareaaaa: " + tarea.getTitulo()); // Verificar datos aquí
-                tareaViewHolder.bind(tarea);
+                Log.d("DEBUG", "onBindViewHolder: Setting data for " + tarea.getTitulo());
+                tareaViewHolder.SetearDatos(getApplicationContext(), tarea.getTitulo(), tarea.getDescripcion(),
+                        tarea.getFecha(), tarea.getFechaCreacion(), tarea.getEstado(), tarea.gettid(), tarea.getuid());
             }
 
             @NonNull
             @Override
             public TareaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                Log.d("DEBUG", "onCreateViewHolder: Creating view holder");
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tarea, parent, false);
-                return new TareaViewHolder(view);
+                TareaViewHolder tareaViewHolder = new TareaViewHolder(view);
+                tareaViewHolder.setOnClickListener(new TareaViewHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(Menu_Principal.this, "on item click", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        Toast.makeText(Menu_Principal.this, "on item long click", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return tareaViewHolder;
             }
         };
+        Log.d("DEBUG", "Adapter created");
+        linearLayoutManager = new LinearLayoutManager(Menu_Principal.this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager.setReverseLayout(true); //listar desde la ultima tarea creada a la ultima
+        linearLayoutManager.setStackFromEnd(true); //La lista empieza por arriba
+        recyclerViewTareas.setLayoutManager(linearLayoutManager);
         recyclerViewTareas.setAdapter(firebaseRecyclerAdapter);
-        firebaseRecyclerAdapter.startListening();
+        Log.d("DEBUG", "RecyclerView set up completed");
     }
     @Override
     protected void onStart() {
@@ -166,6 +186,7 @@ public class Menu_Principal extends AppCompatActivity {
         ComprobarSesionNull();
         if (firebaseRecyclerAdapter != null) {
             firebaseRecyclerAdapter.startListening();
+            Log.d("DEBUG", "Adapter started listening");
         }
     }
 
@@ -174,6 +195,7 @@ public class Menu_Principal extends AppCompatActivity {
         super.onStop();
         if (firebaseRecyclerAdapter != null) {
             firebaseRecyclerAdapter.stopListening();
+            Log.d("DEBUG", "Adapter stopped listening");
         }
     }
 

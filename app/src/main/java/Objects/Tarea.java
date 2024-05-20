@@ -1,8 +1,8 @@
 package Objects;
 
 public class Tarea {
-    private String Uid;
-    private String Tid;
+    private String uid;
+    private String tid;
     private String titulo;
     private String descripcion;
     private String fecha;
@@ -20,26 +20,26 @@ public class Tarea {
         this.fecha = fecha;
         this.fechaCreacion = fechaCreacion;
         this.estado = estado;
-        this.Tid = tid;
-        this.Uid = uid;
+        this.tid = tid;
+        this.uid = uid;
     }
 
     // Getters y setters
 
-    public String getUid() {
-        return Uid;
+    public String getuid() {
+        return uid;
     }
 
-    public void setUid(String uid) {
-        Uid = uid;
+    public void setuid(String uid) {
+        uid = uid;
     }
 
-    public String getTid() {
-        return Tid;
+    public String gettid() {
+        return tid;
     }
 
-    public void setTid(String tid) {
-        Tid = tid;
+    public void settid(String tid) {
+        tid = tid;
     }
 
     public String getTitulo() {

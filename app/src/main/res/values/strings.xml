@@ -40,4 +40,13 @@
     <string name="Btn_RegistraNota">Guardar</string>
     <string name="CrearTarea">Crear tarea</string>
 
+    <!-- ITEM NOTA -->
+    <string name="fecha_hora_actualItem">Fecha y hora actual</string>
+    <string name="tituloItem">Titulo</string>
+    <string name="descripcionItem">Descripcion</string>
+    <string name="fechaItem">dd/mm/aaaa</string>
+    <string name="estadoItem">No finalizado</string>
+    <string name="Uid_UsuarioItem">Uid del Usuario</string>
+    <string name="Tid_TareaItem">Tid de la tarea</string>
+
 </resources>

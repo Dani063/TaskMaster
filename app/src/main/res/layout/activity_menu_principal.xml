@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:padding="5dp"
         android:gravity="center">
-        
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="120dp"
@@ -79,7 +79,7 @@
 
             <Button
                 android:id="@+id/AgregaNota"
-                android:layout_marginTop="480dp"
+                android:layout_marginTop="280dp"
                 android:layout_width="63dp"
                 android:layout_height="70dp"
                 android:layout_gravity="end"
