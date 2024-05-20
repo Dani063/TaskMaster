@@ -25,12 +25,21 @@ public class Tarea {
     }
 
     // Getters y setters
+
+    public String getUid() {
+        return Uid;
+    }
+
+    public void setUid(String uid) {
+        Uid = uid;
+    }
+
     public String getTid() {
         return Tid;
     }
 
-    public String getUid() {
-        return Uid;
+    public void setTid(String tid) {
+        Tid = tid;
     }
 
     public String getTitulo() {

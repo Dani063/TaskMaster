@@ -31,6 +31,8 @@ import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import Objects.Tarea;
+
 public class CrearTarea extends AppCompatActivity {
 
     TextView Uid_Usuario, Correo_usuario, Fecha_hora_actual, Fecha, Estado;
@@ -131,13 +133,11 @@ public class CrearTarea extends AppCompatActivity {
         Fecha_hora_actual.setText(GetFechaHora());
 
     }
-
     private String GetFechaHora() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
         return dateFormat.format(calendar.getTime());
     }
-
     private void ValidarDatos() {
 
         titulo = Titulo.getText().toString();
@@ -155,43 +155,42 @@ public class CrearTarea extends AppCompatActivity {
             CrearNuevaTarea();
         }
     }
-
     private void CrearNuevaTarea() {
         progressDialog.setMessage("Creando Tarea...");
         progressDialog.show();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Tareas").child(uid);
+        DatabaseReference databaseReference;
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         tid = databaseReference.push().getKey();
+
 
         if (descripcion.isEmpty()){
             descripcion = "Vacio";
             Descripcion.setText(descripcion);
         }
+        if (fecha.isEmpty()){
+            fecha = "Vacio";
+            Fecha.setText(fecha);
+        }
 
-        HashMap<String,String> Datos = new HashMap<>();
-        Datos.put("Uid", uid);
-        Datos.put("Tid", tid);
-        Datos.put("titulo", titulo);
-        Datos.put("descripcion", descripcion);
-        Datos.put("fecha", fecha);
-        Datos.put("fechaCreacion", fechacreacion);
-        Datos.put("estado", estado);
-
-        //crear tarea en firebase
-
-
-        databaseReference.child(tid).setValue(Datos).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                progressDialog.dismiss();
-                Toast.makeText(CrearTarea.this,"Nueva Tarea!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(CrearTarea.this,Menu_Principal.class));
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Toast.makeText(CrearTarea.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (!uid.isEmpty() && !tid.equals("")&& !fechacreacion.isEmpty() && !fecha.isEmpty() &&
+                !titulo.isEmpty() && !descripcion.isEmpty() && !estado.isEmpty()){
+            //crear objeto tarea
+            Tarea tarea = new Tarea(titulo,descripcion,fecha,fechacreacion,estado,tid,uid);
+            //crear tarea en firebase
+            databaseReference.child("Tareas").child(tid).setValue(tarea).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    progressDialog.dismiss();
+                    Toast.makeText(CrearTarea.this,"Nueva Tarea!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CrearTarea.this,Menu_Principal.class));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    Toast.makeText(CrearTarea.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }
