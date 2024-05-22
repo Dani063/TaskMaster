@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,4 +8,116 @@
     android:layout_height="match_parent"
     tools:context="ActualizarTarea.Actualizar_Tarea">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/CrearTarea_A"
+            android:fontFamily="@font/robotoblack"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_marginTop="30sp"
+            android:hint="@string/Uid_Usuario_A"
+            android:id="@+id/Uid_Usuario_A"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:fontFamily="@font/robotoblack"/>
+        <TextView
+            android:hint="@string/Tid_A"
+            android:id="@+id/Tid_A"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:fontFamily="@font/robotoblack"/>
+        <TextView
+            android:hint="@string/Correo_usuario_A"
+            android:id="@+id/Correo_usuario_A"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:fontFamily="@font/robotoblack"/>
+        <TextView
+            android:hint="@string/Fecha_hora_actual_A"
+            android:id="@+id/Fecha_hora_Actual_A"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:fontFamily="@font/robotoblack"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/Titulo_A"
+            android:id="@+id/Titulo_A"
+            android:inputType="textCapWords"
+            android:textSize="20sp"
+            android:fontFamily="@font/robotoblack"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/Descripcion_A"
+            android:id="@+id/Descripcion_A"
+            android:inputType="textCapSentences"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/robotoblack"
+            android:minHeight="150dp"
+            android:gravity="start"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Btn_Calendario_A"
+                android:id="@+id/Btn_Calendario_A"
+                android:fontFamily="@font/robotoblack"
+                android:drawableLeft="@drawable/icons8_calendario_48__1_"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/Fecha_A"
+                android:id="@+id/Fecha_A"
+                android:layout_marginStart="15dp"
+                android:fontFamily="@font/robotoblack"
+                android:textSize="20sp"
+                android:layout_marginTop="-47dp"
+                android:layout_gravity="end"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/Estado_A"
+            android:id="@+id/Estado_A"
+            android:textSize="20sp"
+            android:layout_marginTop="10sp"
+            android:fontFamily="@font/robotoblack"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Btn_RegistraNota_A"
+            android:id="@+id/Guardar_A"
+            android:textSize="20sp"
+            android:fontFamily="@font/robotoblack"
+            android:layout_marginTop="30dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</ScrollView>

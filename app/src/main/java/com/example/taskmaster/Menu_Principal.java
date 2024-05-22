@@ -38,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import ActualizarTarea.Actualizar_Tarea;
 import Objects.Tarea;
 import ViewHolder.TareaViewHolder;
 
@@ -178,6 +179,7 @@ public class Menu_Principal extends AppCompatActivity {
                         //Declarar las vistas
                         Button O_Editar, O_Eliminar;
                         TextView tituloOpcion, descripcionOpcion, fechaOpcion, estadoOpcion;
+                        String titulo, descripcion, fecha, estado, uid, tid, fechaCreacion;
 
                         //Conexion con el diseño
                         dialog.setContentView(R.layout.opciones);
@@ -189,7 +191,15 @@ public class Menu_Principal extends AppCompatActivity {
                         descripcionOpcion = dialog.findViewById(R.id.descripcionOpcion);
                         fechaOpcion = dialog.findViewById(R.id.fechaOpcion);
                         estadoOpcion = dialog.findViewById(R.id.estadoOpcion);
-                        String tid = getItem(position).getTid();
+
+                        //Get Strings
+                        uid = getItem(position).getUid();
+                        fechaCreacion = getItem(position).getFechaCreacion();
+                        tid = getItem(position).getTid();
+                        titulo = getItem(position).getTitulo();
+                        descripcion = getItem(position).getDescripcion();
+                        fecha = getItem(position).getFecha();
+                        estado = getItem(position).getEstado();
 
                         // Recuperar textos
                         tituloOpcion.setText(getItem(position).getTitulo());
@@ -207,7 +217,17 @@ public class Menu_Principal extends AppCompatActivity {
                         O_Editar.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(Menu_Principal.this, "Nota actualizada", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(Menu_Principal.this, "Nota actualizada", Toast.LENGTH_SHORT).show();
+                                //startActivity(new Intent(Menu_Principal.this, Actualizar_Tarea.class));
+                                Intent intent = new Intent(Menu_Principal.this, Actualizar_Tarea.class);
+                                intent.putExtra("tid",tid);
+                                intent.putExtra("uid",uid);
+                                intent.putExtra("titulo", titulo);
+                                intent.putExtra("descripcion",descripcion);
+                                intent.putExtra("fecha",fecha);
+                                intent.putExtra("fechaCreacion",fechaCreacion);
+                                intent.putExtra("estado",estado);
+                                startActivity(intent);
                                 dialog.dismiss();
                             }
                         });

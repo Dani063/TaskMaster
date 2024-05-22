@@ -48,7 +48,7 @@
     <string name="estadoItem">No finalizado</string>
     <string name="Uid_UsuarioItem">Uid del Usuario</string>
     <string name="Tid_TareaItem">Tid de la tarea</string>
-    
+
     <!-- OPCIONES TAREA -->
     <string name="OpcionesTXT">Opciones</string>
     <string name="O_Eliminar">Eliminar</string>
@@ -57,5 +57,18 @@
     <string name="descripcionOpcion">Descripcion</string>
     <string name="fechaOpcion">dd/mm/aaaa</string>
     <string name="estadoOpcion">No finalizado</string>
+
+    <!-- ACTUALIZAR TAREA -->
+    <string name="Tid_A">Tid de la tarea</string>
+    <string name="Uid_Usuario_A">Uid del Usuario</string>
+    <string name="Correo_usuario_A">Correo de usuario</string>
+    <string name="Fecha_hora_actual_A">Fecha y hora actual</string>
+    <string name="Titulo_A">Titulo</string>
+    <string name="Descripcion_A">Descripcion</string>
+    <string name="Btn_Calendario_A">Calendario</string>
+    <string name="Fecha_A">dd/mm/aaaa</string>
+    <string name="Estado_A">No finalizado</string>
+    <string name="Btn_RegistraNota_A">Guardar</string>
+    <string name="CrearTarea_A">Editar Tarea</string>
 
 </resources>
