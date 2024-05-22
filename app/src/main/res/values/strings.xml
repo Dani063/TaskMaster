@@ -48,5 +48,14 @@
     <string name="estadoItem">No finalizado</string>
     <string name="Uid_UsuarioItem">Uid del Usuario</string>
     <string name="Tid_TareaItem">Tid de la tarea</string>
+    
+    <!-- OPCIONES TAREA -->
+    <string name="OpcionesTXT">Opciones</string>
+    <string name="O_Eliminar">Eliminar</string>
+    <string name="O_Editar">Editar</string>
+    <string name="tituloOpcion">Titulo</string>
+    <string name="descripcionOpcion">Descripcion</string>
+    <string name="fechaOpcion">dd/mm/aaaa</string>
+    <string name="estadoOpcion">No finalizado</string>
 
 </resources>

@@ -1,5 +1,9 @@
 package com.example.taskmaster;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import Objects.Tarea;
@@ -37,7 +43,8 @@ import ViewHolder.TareaViewHolder;
 
 public class Menu_Principal extends AppCompatActivity {
 
-    Button CerrarSesion, AgregaNota;
+    Button CerrarSesion;
+    FloatingActionButton AgregaNota;
     TextView NombresPrincipal, CorreoPrincipal;
     ProgressBar progressBarDatos;
     DatabaseReference Usuarios;
@@ -46,6 +53,7 @@ public class Menu_Principal extends AppCompatActivity {
     RecyclerView recyclerViewTareas;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference BASE_DE_DATOS;
+    Dialog dialog;
 
     LinearLayoutManager linearLayoutManager; //Modifica forma de listar las notas
     FirebaseRecyclerAdapter<Tarea, TareaViewHolder> firebaseRecyclerAdapter; //usa un detector de eventos para ver los cambios en la bd de tareas
@@ -66,6 +74,7 @@ public class Menu_Principal extends AppCompatActivity {
         recyclerViewTareas.setLayoutManager(new LinearLayoutManager(this));
 
         BASE_DE_DATOS = FirebaseDatabase.getInstance().getReference("Tareas");
+        dialog = new Dialog(Menu_Principal.this);
 
         NombresPrincipal = findViewById(R.id.NombresPrincipal);
         CorreoPrincipal = findViewById(R.id.CorreoPrincipal);
@@ -142,14 +151,12 @@ public class Menu_Principal extends AppCompatActivity {
         options = new FirebaseRecyclerOptions.Builder<Tarea>()
                 .setQuery(BASE_DE_DATOS, Tarea.class).build();
         Log.d("DEBUG", "Options set for FirebaseRecyclerAdapter");
-        System.out.println(options.getSnapshots().getClass());
-
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Tarea, TareaViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull TareaViewHolder tareaViewHolder, int i, @NonNull Tarea tarea) {
                 Log.d("DEBUG", "onBindViewHolder: Setting data for " + tarea.getTitulo());
                 tareaViewHolder.SetearDatos(getApplicationContext(), tarea.getTitulo(), tarea.getDescripcion(),
-                        tarea.getFecha(), tarea.getFechaCreacion(), tarea.getEstado(), tarea.gettid(), tarea.getuid());
+                        tarea.getFecha(), tarea.getFechaCreacion(), tarea.getEstado(), tarea.getTid(), tarea.getUid());
             }
 
             @NonNull
@@ -166,7 +173,45 @@ public class Menu_Principal extends AppCompatActivity {
 
                     @Override
                     public void onItemLongClick(View view, int position) {
-                        Toast.makeText(Menu_Principal.this, "on item long click", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Menu_Principal.this, "on item long click", Toast.LENGTH_SHORT).show();
+
+                        //Declarar las vistas
+                        Button O_Editar, O_Eliminar;
+                        TextView tituloOpcion, descripcionOpcion, fechaOpcion, estadoOpcion;
+
+                        //Conexion con el diseño
+                        dialog.setContentView(R.layout.opciones);
+
+                        //Inicializar vistas
+                        O_Eliminar = dialog.findViewById(R.id.O_Eliminar);
+                        O_Editar = dialog.findViewById((R.id.O_Editar));
+                        tituloOpcion = dialog.findViewById(R.id.tituloOpcion);
+                        descripcionOpcion = dialog.findViewById(R.id.descripcionOpcion);
+                        fechaOpcion = dialog.findViewById(R.id.fechaOpcion);
+                        estadoOpcion = dialog.findViewById(R.id.estadoOpcion);
+                        String tid = getItem(position).getTid();
+
+                        // Recuperar textos
+                        tituloOpcion.setText(getItem(position).getTitulo());
+                        descripcionOpcion.setText(getItem(position).getDescripcion());
+                        fechaOpcion.setText(getItem(position).getFecha());
+                        estadoOpcion.setText(getItem(position).getEstado());
+
+                        O_Eliminar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                EliminarTarea(tid);
+                                dialog.dismiss();
+                            }
+                        });
+                        O_Editar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(Menu_Principal.this, "Nota actualizada", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
                     }
                 });
                 return tareaViewHolder;
@@ -179,6 +224,38 @@ public class Menu_Principal extends AppCompatActivity {
         recyclerViewTareas.setLayoutManager(linearLayoutManager);
         recyclerViewTareas.setAdapter(firebaseRecyclerAdapter);
         Log.d("DEBUG", "RecyclerView set up completed");
+    }
+
+    private void EliminarTarea(String tid){
+        AlertDialog.Builder builder = new AlertDialog.Builder(Menu_Principal.this);
+        builder.setTitle("Eliminar la tarea");
+        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Query query =BASE_DE_DATOS.orderByChild("tid").equalTo(tid);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds : snapshot.getChildren()){
+                            ds.getRef().removeValue();
+                        }
+                        Toast.makeText(Menu_Principal.this, "Tarea eliminada", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(Menu_Principal.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(Menu_Principal.this, "Cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.create().show();
     }
     @Override
     protected void onStart() {

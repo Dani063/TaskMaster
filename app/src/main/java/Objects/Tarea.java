@@ -26,20 +26,20 @@ public class Tarea {
 
     // Getters y setters
 
-    public String getuid() {
-        return uid;
-    }
-
-    public void setuid(String uid) {
-        uid = uid;
-    }
-
-    public String gettid() {
+    public String getTid() {
         return tid;
     }
 
-    public void settid(String tid) {
-        tid = tid;
+    public void setTid(String tid) {
+        this.tid = tid;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getTitulo() {

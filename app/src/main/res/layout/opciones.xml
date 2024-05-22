@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:padding="10dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="0dp"
+    android:backgroundTint="@color/grey">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/OpcionesTXT"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/robotoblack"/>
+
+    <androidx.cardview.widget.CardView
+        app:cardUseCompatPadding="true"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_margin="0dp"
+        app:cardCornerRadius="29dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="0dp">
+                <TextView
+                    android:id="@+id/tituloOpcion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/robotoblack"
+                    android:text="@string/tituloOpcion"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/descripcionOpcion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/robotoblack"
+                    android:text="@string/descripcionOpcion"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/fechaOpcion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/robotoblack"
+                    android:text="@string/fechaOpcion"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/estadoOpcion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/robotoblack"
+                    android:text="@string/estadoOpcion"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/baseline_edit_24"
+        android:text="@string/O_Editar"
+        android:id="@+id/O_Editar"
+        android:textSize="15sp"
+        android:fontFamily="@font/robotoblack"/>
+    <Button
+        android:layout_width="200dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:text="@string/O_Eliminar"
+        app:icon="@drawable/icons8_papelera_30"
+        android:id="@+id/O_Eliminar"
+        android:textSize="15sp"
+        android:fontFamily="@font/robotoblack"
+        android:backgroundTint="@color/colorPrimaryOposite"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

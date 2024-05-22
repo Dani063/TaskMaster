@@ -15,67 +15,79 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="15dp">
 
-        <TextView
-            android:id="@+id/tituloItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/robotoblack"
-            android:text="@string/tituloItem"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
 
-        <TextView
-            android:id="@+id/descripcionItem"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/robotoblack"
-            android:text="@string/descripcionItem"
-            android:layout_marginTop="4dp" />
+            android:orientation="vertical"
+            android:padding="0dp">
+            <TextView
+                android:id="@+id/tituloItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/tituloItem"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/descripcionItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/descripcionItem"
+                android:layout_marginTop="4dp" />
 
-        <TextView
-            android:id="@+id/fechaItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/robotoblack"
-            android:text="@string/fechaItem"
-            android:layout_marginTop="4dp" />
+            <TextView
+                android:id="@+id/fechaItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/fechaItem"
+                android:layout_marginTop="4dp" />
 
-        <TextView
-            android:id="@+id/fecha_hora_ActualItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/robotoblack"
-            android:text="@string/fecha_hora_actualItem"
-            android:layout_marginTop="4dp"
-            android:visibility="gone"/>
+            <TextView
+                android:id="@+id/fecha_hora_ActualItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/fecha_hora_actualItem"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/estadoItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/robotoblack"
-            android:text="@string/estadoItem"
-            android:layout_marginTop="4dp"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/Uid_UsuarioItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/robotoblack"
-            android:text="@string/Uid_UsuarioItem"
-            android:layout_marginTop="4dp"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/Tid_TareaItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/robotoblack"
-            android:text="@string/Tid_TareaItem"
-            android:layout_marginTop="4dp"
-            android:visibility="gone"/>
+            <TextView
+                android:id="@+id/estadoItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/estadoItem"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/Uid_UsuarioItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/Uid_UsuarioItem"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/Tid_TareaItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/Tid_TareaItem"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 
