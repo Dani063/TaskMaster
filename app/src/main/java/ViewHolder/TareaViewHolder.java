@@ -2,18 +2,22 @@ package ViewHolder;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskmaster.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import Objects.Tarea;
 
 public class TareaViewHolder extends RecyclerView.ViewHolder {
     View mView;
-    private TareaViewHolder.ClickListener mClickListener;
+    CheckBox checkboxEstado;
+    private ClickListener mClickListener;
 
 
     public interface ClickListener{
@@ -21,7 +25,7 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
         void onItemLongClick(View view, int position);
     }
 
-    public void setOnClickListener(TareaViewHolder.ClickListener clickListener){
+    public void setOnClickListener(ClickListener clickListener){
         mClickListener = clickListener;
     }
 
@@ -30,6 +34,7 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
     public TareaViewHolder(@NonNull View itemView) {
         super(itemView);
         mView = itemView;
+
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +66,7 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
         estadoItem = mView.findViewById(R.id.estadoItem);
         Tid_TareaItem = mView.findViewById(R.id.Tid_TareaItem);
         Uid_UsuarioItem = mView.findViewById(R.id.Uid_UsuarioItem);
+        checkboxEstado = mView.findViewById(R.id.checkboxEstado);
 
         //Setear info en el item
         tituloItem.setText(titulo);
@@ -70,5 +76,16 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
         estadoItem.setText(estado);
         Tid_TareaItem.setText(tid);
         Uid_UsuarioItem.setText(uid);
+        checkboxEstado.setChecked("Finalizado".equals(estado));
+        checkboxEstado.setOnClickListener(v -> {
+            boolean isChecked = checkboxEstado.isChecked();
+            DatabaseReference databaseReference;
+            databaseReference = FirebaseDatabase.getInstance().getReference("Tareas").child(tid);
+            if (isChecked) {
+                databaseReference.child("estado").setValue("Finalizado");
+            } else {
+                databaseReference.child("estado").setValue("No finalizado");
+            }
+        });
     }
 }
