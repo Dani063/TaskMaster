@@ -45,12 +45,11 @@ import ViewHolder.TareaViewHolder;
 
 public class Menu_Principal extends AppCompatActivity {
 
-    Button CerrarSesion;
+    Button Btn_Ajustes;
     FloatingActionButton AgregaNota;
     TextView NombresPrincipal, CorreoPrincipal;
     ProgressBar progressBarDatos;
     DatabaseReference Usuarios;
-    FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     RecyclerView recyclerViewTareas;
     FirebaseDatabase firebaseDatabase;
@@ -82,19 +81,18 @@ public class Menu_Principal extends AppCompatActivity {
         CorreoPrincipal = findViewById(R.id.CorreoPrincipal);
         progressBarDatos = findViewById(R.id.progressBar);
         AgregaNota = findViewById(R.id.AgregaNota);
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Usuarios = FirebaseDatabase.getInstance().getReference("Usuarios");
-        CerrarSesion = findViewById(R.id.CerrarSesion);
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        Btn_Ajustes = findViewById(R.id.Btn_Ajustes);
 
         //Listar Tareas usuario
         ListarTareasUsuarios();
 
-        CerrarSesion.setOnClickListener(new View.OnClickListener() {
+        Btn_Ajustes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SalirApp();
+                startActivity(new Intent(Menu_Principal.this, Ajustes.class));
             }
         });
         AgregaNota.setOnClickListener(new View.OnClickListener() {
@@ -179,6 +177,7 @@ public class Menu_Principal extends AppCompatActivity {
 
                         //Declarar las vistas
                         Button O_Editar, O_Eliminar;
+                        CheckBox estadoTarea;
                         TextView tituloOpcion, descripcionOpcion, fechaOpcion, estadoOpcion;
                         String titulo, descripcion, fecha, estado, uid, tid, fechaCreacion;
 
@@ -186,6 +185,7 @@ public class Menu_Principal extends AppCompatActivity {
                         dialog.setContentView(R.layout.opciones);
 
                         //Inicializar vistas
+                        estadoTarea = dialog.findViewById(R.id.checkbox);
                         O_Eliminar = dialog.findViewById(R.id.O_Eliminar);
                         O_Editar = dialog.findViewById((R.id.O_Editar));
                         tituloOpcion = dialog.findViewById(R.id.tituloOpcion);
@@ -201,6 +201,7 @@ public class Menu_Principal extends AppCompatActivity {
                         descripcion = getItem(position).getDescripcion();
                         fecha = getItem(position).getFecha();
                         estado = getItem(position).getEstado();
+                        estadoTarea.setChecked("Finalizado".equals(estado));
 
                         // Recuperar textos
                         tituloOpcion.setText(getItem(position).getTitulo());
@@ -305,9 +306,5 @@ public class Menu_Principal extends AppCompatActivity {
             finish();
         }
     }
-    private void SalirApp() {
-        firebaseAuth.signOut();
-        startActivity(new Intent(Menu_Principal.this,MainActivity.class));
-        Toast.makeText(this, "Cerrando sesion", Toast.LENGTH_SHORT).show();
-    }
+
 }

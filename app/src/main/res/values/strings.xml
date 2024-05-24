@@ -15,11 +15,12 @@
     <string name="Tengounacuenta">Tengo una cuenta</string>
 
     <!-- Menu Principal -->
-    <string name="CerrarSesion">Salir</string>
+
     <string name="BienvenidoPrincipal">Bienvenido</string>
     <string name="NombresPrincipal"> -- </string>
     <string name="CorreoPrincipal"> -- </string>
     <string name="AgregaNota">+</string>
+    <string name="Btn_Ajustes"> </string>
 
     <!-- LogIn -->
     <string name="CorreoLogin">Correo electronico</string>
@@ -70,5 +71,9 @@
     <string name="Estado_A">No finalizado</string>
     <string name="Btn_RegistraNota_A">Guardar</string>
     <string name="CrearTarea_A">Editar Tarea</string>
+
+    <!-- AJUSTES -->
+    <string name="AjustesTXT">Ajustes</string>
+    <string name="CerrarSesion">Cerrar sesion</string>
 
 </resources>

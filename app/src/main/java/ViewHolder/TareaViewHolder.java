@@ -1,5 +1,6 @@
 package ViewHolder;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.taskmaster.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -18,6 +20,7 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
     View mView;
     CheckBox checkboxEstado;
     private ClickListener mClickListener;
+    //private boolean isAnimating = false;
 
 
     public interface ClickListener{
@@ -83,6 +86,32 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
             databaseReference = FirebaseDatabase.getInstance().getReference("Tareas").child(tid);
             if (isChecked) {
                 databaseReference.child("estado").setValue("Finalizado");
+                /*LottieAnimationView animationView;
+                animationView = mView.findViewById(R.id.LottieTareaCompletada);
+                // Mostrar y reproducir la animación
+                animationView.setVisibility(View.VISIBLE);
+                animationView.playAnimation();
+                isAnimating = true;
+                // Ocultar y parar la animación
+                animationView.addAnimatorListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(@NonNull Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(@NonNull Animator animation) {
+                        animationView.setVisibility(View.GONE);
+                        isAnimating = false;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(@NonNull Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(@NonNull Animator animation) {
+                    }
+                });*/
             } else {
                 databaseReference.child("estado").setValue("No finalizado");
             }
