@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/CerrarSesion"
         android:layout_below="@+id/cardViewContainer"
         tools:ignore="NotSibling">
 
@@ -27,7 +26,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewContainer"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="140dp"
                 app:cardBackgroundColor="@color/colorPrimaryLight"
                 app:cardUseCompatPadding="true"
                 android:padding="0.2dp"
@@ -53,19 +52,28 @@
                         android:text="@string/NombresPrincipal"
                         android:fontFamily="@font/robotoblack"
                         android:textSize="20sp"/>
-                    <TextView
+                    <!-- <TextView
                         android:id="@+id/CorreoPrincipal"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/CorreoPrincipal"
                         android:fontFamily="@font/robotoblack"
+                        android:textSize="20sp"/> -->
+                    <TextView
+                        android:id="@+id/FraseAnimoTXT"
+                        android:visibility="gone"
+                        android:layout_marginTop="10dp"
+                        android:padding="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/FraseAnimoTXT"
+                        android:fontFamily="@font/robotoblack"
                         android:textSize="20sp"/>
                     <Button
                         android:id="@+id/Btn_Ajustes"
-                        android:visibility="visible"
                         android:layout_gravity="end"
-                        android:layout_marginTop="-59dp"
+                        android:layout_marginTop="-110dp"
                         android:layout_width="80dp"
                         android:layout_height="46dp"
                         android:text="@string/Btn_Ajustes"
@@ -76,10 +84,28 @@
 
             </androidx.cardview.widget.CardView>
 
+            <TextView
+                android:id="@+id/TareasPendientesTXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/TareasPendientesTXT"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/reciclerViewTareas"/>
+                android:id="@+id/reciclerViewTareasPendientes"/>
+
+            <TextView
+                android:id="@+id/TareasCompletadasTXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotoblack"
+                android:text="@string/TareasCompletadasTXT"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/reciclerViewTareasCompletadas"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>

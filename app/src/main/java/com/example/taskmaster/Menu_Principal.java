@@ -47,17 +47,19 @@ public class Menu_Principal extends AppCompatActivity {
 
     Button Btn_Ajustes;
     FloatingActionButton AgregaNota;
-    TextView NombresPrincipal, CorreoPrincipal;
+    TextView NombresPrincipal, /*CorreoPrincipal,*/ FraseAnimoTXT;
     ProgressBar progressBarDatos;
     DatabaseReference Usuarios;
     FirebaseUser firebaseUser;
-    RecyclerView recyclerViewTareas;
+    RecyclerView ReciclerViewTareasPendientes, ReciclerViewTareasCompletadas;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference BASE_DE_DATOS;
     Dialog dialog;
+    int count = 0;
 
     LinearLayoutManager linearLayoutManager; //Modifica forma de listar las notas
-    FirebaseRecyclerAdapter<Tarea, TareaViewHolder> firebaseRecyclerAdapter; //usa un detector de eventos para ver los cambios en la bd de tareas
+    FirebaseRecyclerAdapter<Tarea, TareaViewHolder> AdapterPendientes; //usa un detector de eventos para ver los cambios en la bd de tareas
+    FirebaseRecyclerAdapter<Tarea, TareaViewHolder> AdapterCompletadas;
     FirebaseRecyclerOptions<Tarea> options;
 
     @Override
@@ -70,17 +72,21 @@ public class Menu_Principal extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        recyclerViewTareas = findViewById(R.id.reciclerViewTareas);
-        //recyclerViewTareas.setHasFixedSize(true); //recycler view adaptara su tamaño a los elementos//Al estar la actividad dentro de un scroll view si se activa esta propiedad hace que no se vean las tareas
-        recyclerViewTareas.setLayoutManager(new LinearLayoutManager(this));
+        ReciclerViewTareasPendientes = findViewById(R.id.reciclerViewTareasPendientes);
+        ReciclerViewTareasCompletadas = findViewById(R.id.reciclerViewTareasCompletadas);
+        //ReciclerViewTareasPendientes.setHasFixedSize(true); //recycler view adaptara su tamaño a los elementos//Al estar la actividad dentro de un scroll view si se activa esta propiedad hace que no se vean las tareas
+        ReciclerViewTareasPendientes.setLayoutManager(new LinearLayoutManager(this));
+        ReciclerViewTareasCompletadas.setLayoutManager(new LinearLayoutManager(this));
 
         BASE_DE_DATOS = FirebaseDatabase.getInstance().getReference("Tareas");
         dialog = new Dialog(Menu_Principal.this);
 
         NombresPrincipal = findViewById(R.id.NombresPrincipal);
-        CorreoPrincipal = findViewById(R.id.CorreoPrincipal);
+        //CorreoPrincipal = findViewById(R.id.CorreoPrincipal);
         progressBarDatos = findViewById(R.id.progressBar);
         AgregaNota = findViewById(R.id.AgregaNota);
+        FraseAnimoTXT = findViewById(R.id.FraseAnimoTXT);
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Usuarios = FirebaseDatabase.getInstance().getReference("Usuarios");
@@ -88,6 +94,7 @@ public class Menu_Principal extends AppCompatActivity {
 
         //Listar Tareas usuario
         ListarTareasUsuarios();
+        EscribirFraseAnimo();
 
         Btn_Ajustes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +110,44 @@ public class Menu_Principal extends AppCompatActivity {
         });
     }
 
+    private void EscribirFraseAnimo(){
+        if (firebaseUser != null) {
+            String userId = firebaseUser.getUid();
+            Query query = BASE_DE_DATOS.orderByChild("uid").equalTo(userId);
+
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int count = 0;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String estado = snapshot.child("estado").getValue(String.class);
+                        if ("No finalizado".equals(estado)) {
+                            count++;
+                        }
+                    }
+                    Log.d("TareasSinFinalizar", "Número de tareas sin finalizar: " + count);
+                    if (count == 0) {
+                        FraseAnimoTXT.setText("No te crees ni tú que no tengas nada que hacer, pon tareas >:(");
+                    } else if (count >= 1 && count <= 5) {
+                        FraseAnimoTXT.setText("Tienes algunas tareas pendientes, podrias acabarlas no??");
+                    } else if (count > 5 && count <= 10) {
+                        FraseAnimoTXT.setText("Se te empiezan a acumular... Haz algo porfavor");
+                    } else if (count > 10 && count <= 25) {
+                        FraseAnimoTXT.setText("Mucho poner tareas y no terminas nada, espabila!");
+                    }
+                    else if (count > 25) {
+                        FraseAnimoTXT.setText("Mira yo me rindo... esto no hay quien lo salve");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.w("TareasSinFinalizar", "Error al leer los datos", databaseError.toException());
+                }
+            });
+        }
+
+    }
     private void CargaDatos() {
         Usuarios.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -113,13 +158,14 @@ public class Menu_Principal extends AppCompatActivity {
                     progressBarDatos.setVisibility(View.GONE);
                     //Los datos se muestran
                     NombresPrincipal.setVisibility(View.VISIBLE);
-                    CorreoPrincipal.setVisibility(View.VISIBLE);
+                    FraseAnimoTXT.setVisibility(View.VISIBLE);
+                    //CorreoPrincipal.setVisibility(View.VISIBLE);
                     //Obtener los datos
                     String nombres = "Bienvenido " + snapshot.child("nombre").getValue() + " !";
                     String correo = "" + snapshot.child("correo").getValue();
                     //Set Datos
                     NombresPrincipal.setText(nombres);
-                    CorreoPrincipal.setText(correo);
+                    //CorreoPrincipal.setText(correo);
                     // Verificación de datos en BASE_DE_DATOS
                     BASE_DE_DATOS.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -147,11 +193,12 @@ public class Menu_Principal extends AppCompatActivity {
         });
     }
     private void ListarTareasUsuarios(){
-
+        //consulta
+        Query queryPendientes = BASE_DE_DATOS.orderByChild("uid").equalTo(firebaseUser.getUid());
         options = new FirebaseRecyclerOptions.Builder<Tarea>()
-                .setQuery(BASE_DE_DATOS, Tarea.class).build();
+                .setQuery(queryPendientes, Tarea.class).build();
         Log.d("DEBUG", "Options set for FirebaseRecyclerAdapter");
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Tarea, TareaViewHolder>(options) {
+        AdapterPendientes = new FirebaseRecyclerAdapter<Tarea, TareaViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull TareaViewHolder tareaViewHolder, int i, @NonNull Tarea tarea) {
                 Log.d("DEBUG", "onBindViewHolder: Setting data for " + tarea.getTitulo());
@@ -243,8 +290,8 @@ public class Menu_Principal extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(Menu_Principal.this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setReverseLayout(true); //listar desde la ultima tarea creada a la ultima
         linearLayoutManager.setStackFromEnd(true); //La lista empieza por arriba
-        recyclerViewTareas.setLayoutManager(linearLayoutManager);
-        recyclerViewTareas.setAdapter(firebaseRecyclerAdapter);
+        ReciclerViewTareasPendientes.setLayoutManager(linearLayoutManager);
+        ReciclerViewTareasPendientes.setAdapter(AdapterPendientes);
         Log.d("DEBUG", "RecyclerView set up completed");
     }
 
@@ -283,8 +330,8 @@ public class Menu_Principal extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         ComprobarSesionNull();
-        if (firebaseRecyclerAdapter != null) {
-            firebaseRecyclerAdapter.startListening();
+        if (AdapterPendientes != null) {
+            AdapterPendientes.startListening();
             Log.d("DEBUG", "Adapter started listening");
         }
     }
@@ -292,8 +339,8 @@ public class Menu_Principal extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (firebaseRecyclerAdapter != null) {
-            firebaseRecyclerAdapter.stopListening();
+        if (AdapterPendientes != null) {
+            AdapterPendientes.stopListening();
             Log.d("DEBUG", "Adapter stopped listening");
         }
     }

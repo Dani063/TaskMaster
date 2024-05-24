@@ -21,6 +21,9 @@
     <string name="CorreoPrincipal"> -- </string>
     <string name="AgregaNota">+</string>
     <string name="Btn_Ajustes"> </string>
+    <string name="FraseAnimoTXT">Frase</string>
+    <string name="TareasPendientesTXT">--</string>
+    <string name="TareasCompletadasTXT">--</string>
 
     <!-- LogIn -->
     <string name="CorreoLogin">Correo electronico</string>
