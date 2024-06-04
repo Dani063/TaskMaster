@@ -22,8 +22,8 @@
     <string name="AgregaNota">+</string>
     <string name="Btn_Ajustes"> </string>
     <string name="FraseAnimoTXT">Frase</string>
-    <string name="TareasPendientesTXT">--</string>
-    <string name="TareasCompletadasTXT">--</string>
+    <string name="TareasPendientesTXT">Tareas pendientes:</string>
+    <string name="TareasCompletadasTXT">Tareas completadas:</string>
 
     <!-- LogIn -->
     <string name="CorreoLogin">Correo electronico</string>

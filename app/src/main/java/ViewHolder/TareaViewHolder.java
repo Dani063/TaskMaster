@@ -86,6 +86,7 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
             databaseReference = FirebaseDatabase.getInstance().getReference("Tareas").child(tid);
             if (isChecked) {
                 databaseReference.child("estado").setValue("Finalizado");
+                databaseReference.child("filtro").setValue(uid+"/Finalizado");
                 /*LottieAnimationView animationView;
                 animationView = mView.findViewById(R.id.LottieTareaCompletada);
                 // Mostrar y reproducir la animación
@@ -114,6 +115,7 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
                 });*/
             } else {
                 databaseReference.child("estado").setValue("No finalizado");
+                databaseReference.child("filtro").setValue(uid+"/No finalizado");
             }
         });
     }

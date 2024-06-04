@@ -38,7 +38,7 @@ public class CrearTarea extends AppCompatActivity {
     TextView Uid_Usuario, Correo_usuario, Fecha_hora_actual, Fecha, Estado;
     Button Btn_Calendario, Guardar;
     EditText Titulo, Descripcion;
-    String titulo = "", descripcion = "", fecha="", estado="", uid="", tid="", fechacreacion="";
+    String titulo = "", descripcion = "", fecha="", estado="", uid="", tid="", fechacreacion="", filtro="";
     ProgressDialog progressDialog;
     FirebaseAuth firebaseAuth;
     int dia, mes, anio;
@@ -146,6 +146,7 @@ public class CrearTarea extends AppCompatActivity {
         estado = Estado.getText().toString();
         uid = Uid_Usuario.getText().toString();
         fechacreacion = Fecha_hora_actual.getText().toString();
+        filtro = uid + "/" + estado;
 
 
         if (titulo.isEmpty()){
@@ -175,7 +176,7 @@ public class CrearTarea extends AppCompatActivity {
         if (!uid.isEmpty() && !tid.equals("")&& !fechacreacion.isEmpty() && !fecha.isEmpty() &&
                 !titulo.isEmpty() && !descripcion.isEmpty() && !estado.isEmpty()){
             //crear objeto tarea
-            Tarea tarea = new Tarea(titulo,descripcion,fecha,fechacreacion,estado,tid,uid);
+            Tarea tarea = new Tarea(titulo,descripcion,fecha,fechacreacion,estado,tid,uid,filtro);
             //crear tarea en firebase
             databaseReference.child("Tareas").child(tid).setValue(tarea).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override

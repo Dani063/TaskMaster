@@ -8,13 +8,16 @@ public class Tarea {
     private String fecha;
     private String fechaCreacion;
     private String estado;
+    private String filtro;
 
 
     public Tarea() {
         // Constructor vacío requerido para Firebase
     }
 
-    public Tarea(String titulo, String descripcion, String fecha, String fechaCreacion, String estado, String tid, String uid) {
+
+
+    public Tarea(String titulo, String descripcion, String fecha, String fechaCreacion, String estado, String tid, String uid, String filtro) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fecha = fecha;
@@ -22,9 +25,17 @@ public class Tarea {
         this.estado = estado;
         this.tid = tid;
         this.uid = uid;
+        this.filtro = filtro;
     }
 
     // Getters y setters
+    public String getFiltro() {
+        return filtro;
+    }
+
+    public void setFiltro(String filtro) {
+        this.filtro = filtro;
+    }
 
     public String getTid() {
         return tid;

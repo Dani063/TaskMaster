@@ -39,7 +39,7 @@ public class Actualizar_Tarea extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     ProgressDialog progressDialog;
 
-    String tid, uid_usuario, correo_usuario, fecha_hora_actual, fecha, titulo, descripcion, estado;
+    String tid, uid_usuario, correo_usuario, fecha_hora_actual, fecha, titulo, descripcion, estado, filtro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +114,7 @@ public class Actualizar_Tarea extends AppCompatActivity {
         estado = Estado_A.getText().toString();
         uid_usuario = Uid_Usuario_A.getText().toString();
         fecha_hora_actual = Fecha_hora_Actual_A.getText().toString();
+        filtro = uid_usuario + "/" + estado;
 
 
         if (titulo.isEmpty()) {
@@ -180,7 +181,7 @@ public class Actualizar_Tarea extends AppCompatActivity {
         if (!uid_usuario.isEmpty() && !tid.equals("")&& !fecha_hora_actual.isEmpty() && !fecha.isEmpty() &&
                 !titulo.isEmpty() && !descripcion.isEmpty() && !estado.isEmpty()){
             //crear objeto tarea
-            Tarea tarea = new Tarea(titulo,descripcion,fecha,fecha_hora_actual,estado,tid,uid_usuario);
+            Tarea tarea = new Tarea(titulo,descripcion,fecha,fecha_hora_actual,estado,tid,uid_usuario,filtro);
             //crear tarea en firebase
             databaseReference.child("Tareas").child(tid).setValue(tarea).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override

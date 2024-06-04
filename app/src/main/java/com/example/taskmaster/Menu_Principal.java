@@ -57,10 +57,10 @@ public class Menu_Principal extends AppCompatActivity {
     Dialog dialog;
     int count = 0;
 
-    LinearLayoutManager linearLayoutManager; //Modifica forma de listar las notas
+    LinearLayoutManager linearLayoutManager1, linearLayoutManager2; //Modifica forma de listar las notas
     FirebaseRecyclerAdapter<Tarea, TareaViewHolder> AdapterPendientes; //usa un detector de eventos para ver los cambios en la bd de tareas
     FirebaseRecyclerAdapter<Tarea, TareaViewHolder> AdapterCompletadas;
-    FirebaseRecyclerOptions<Tarea> options;
+    FirebaseRecyclerOptions<Tarea> options, optionscompletadas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,16 +127,12 @@ public class Menu_Principal extends AppCompatActivity {
                     }
                     Log.d("TareasSinFinalizar", "Número de tareas sin finalizar: " + count);
                     if (count == 0) {
-                        FraseAnimoTXT.setText("No te crees ni tú que no tengas nada que hacer, pon tareas >:(");
-                    } else if (count >= 1 && count <= 5) {
-                        FraseAnimoTXT.setText("Tienes algunas tareas pendientes, podrias acabarlas no??");
-                    } else if (count > 5 && count <= 10) {
-                        FraseAnimoTXT.setText("Se te empiezan a acumular... Haz algo porfavor");
-                    } else if (count > 10 && count <= 25) {
-                        FraseAnimoTXT.setText("Mucho poner tareas y no terminas nada, espabila!");
+                        FraseAnimoTXT.setText("No tienes tares pendientes! Para crear una nueva, presiona el botón +");
+                    } else if (count == 1) {
+                        FraseAnimoTXT.setText("Tienes " + count + " tarea pendientes!");
                     }
-                    else if (count > 25) {
-                        FraseAnimoTXT.setText("Mira yo me rindo... esto no hay quien lo salve");
+                    else {
+                        FraseAnimoTXT.setText("Tienes " + count + " tareas pendientes!");
                     }
                 }
 
@@ -194,7 +190,7 @@ public class Menu_Principal extends AppCompatActivity {
     }
     private void ListarTareasUsuarios(){
         //consulta
-        Query queryPendientes = BASE_DE_DATOS.orderByChild("uid").equalTo(firebaseUser.getUid());
+        Query queryPendientes = BASE_DE_DATOS.orderByChild("filtro").equalTo(firebaseUser.getUid()+"/No finalizado");
         options = new FirebaseRecyclerOptions.Builder<Tarea>()
                 .setQuery(queryPendientes, Tarea.class).build();
         Log.d("DEBUG", "Options set for FirebaseRecyclerAdapter");
@@ -286,12 +282,108 @@ public class Menu_Principal extends AppCompatActivity {
                 return tareaViewHolder;
             }
         };
+        Query queryCompletadas = BASE_DE_DATOS.orderByChild("filtro").equalTo(firebaseUser.getUid()+"/Finalizado");
+        optionscompletadas = new FirebaseRecyclerOptions.Builder<Tarea>()
+                .setQuery(queryCompletadas, Tarea.class).build();
+        AdapterCompletadas = new FirebaseRecyclerAdapter<Tarea, TareaViewHolder>(optionscompletadas) {
+            @Override
+            protected void onBindViewHolder(@NonNull TareaViewHolder tareaViewHolder, int i, @NonNull Tarea tarea) {
+                Log.d("DEBUG", "onBindViewHolderC: Setting data for " + tarea.getTitulo());
+                tareaViewHolder.SetearDatos(getApplicationContext(), tarea.getTitulo(), tarea.getDescripcion(),
+                        tarea.getFecha(), tarea.getFechaCreacion(), tarea.getEstado(), tarea.getTid(), tarea.getUid());
+            }
+
+            @NonNull
+            @Override
+            public TareaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                Log.d("DEBUG", "onCreateViewHolderC: Creating view holder");
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tarea, parent, false);
+                TareaViewHolder tareaViewHolder = new TareaViewHolder(view);
+                tareaViewHolder.setOnClickListener(new TareaViewHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(Menu_Principal.this, "on item click", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        //Toast.makeText(Menu_Principal.this, "on item long click", Toast.LENGTH_SHORT).show();
+
+                        //Declarar las vistas
+                        Button O_Editar, O_Eliminar;
+                        CheckBox estadoTarea;
+                        TextView tituloOpcion, descripcionOpcion, fechaOpcion, estadoOpcion;
+                        String titulo, descripcion, fecha, estado, uid, tid, fechaCreacion;
+
+                        //Conexion con el diseño
+                        dialog.setContentView(R.layout.opciones);
+
+                        //Inicializar vistas
+                        estadoTarea = dialog.findViewById(R.id.checkbox);
+                        O_Eliminar = dialog.findViewById(R.id.O_Eliminar);
+                        O_Editar = dialog.findViewById((R.id.O_Editar));
+                        tituloOpcion = dialog.findViewById(R.id.tituloOpcion);
+                        descripcionOpcion = dialog.findViewById(R.id.descripcionOpcion);
+                        fechaOpcion = dialog.findViewById(R.id.fechaOpcion);
+                        estadoOpcion = dialog.findViewById(R.id.estadoOpcion);
+
+                        //Get Strings
+                        uid = getItem(position).getUid();
+                        fechaCreacion = getItem(position).getFechaCreacion();
+                        tid = getItem(position).getTid();
+                        titulo = getItem(position).getTitulo();
+                        descripcion = getItem(position).getDescripcion();
+                        fecha = getItem(position).getFecha();
+                        estado = getItem(position).getEstado();
+                        estadoTarea.setChecked("Finalizado".equals(estado));
+
+                        // Recuperar textos
+                        tituloOpcion.setText(getItem(position).getTitulo());
+                        descripcionOpcion.setText(getItem(position).getDescripcion());
+                        fechaOpcion.setText(getItem(position).getFecha());
+                        estadoOpcion.setText(getItem(position).getEstado());
+
+                        O_Eliminar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                EliminarTarea(tid);
+                                dialog.dismiss();
+                            }
+                        });
+                        O_Editar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //Toast.makeText(Menu_Principal.this, "Nota actualizada", Toast.LENGTH_SHORT).show();
+                                //startActivity(new Intent(Menu_Principal.this, Actualizar_Tarea.class));
+                                Intent intent = new Intent(Menu_Principal.this, Actualizar_Tarea.class);
+                                intent.putExtra("tid",tid);
+                                intent.putExtra("uid",uid);
+                                intent.putExtra("titulo", titulo);
+                                intent.putExtra("descripcion",descripcion);
+                                intent.putExtra("fecha",fecha);
+                                intent.putExtra("fechaCreacion",fechaCreacion);
+                                intent.putExtra("estado",estado);
+                                startActivity(intent);
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
+                    }
+                });
+                return tareaViewHolder;
+            }
+        };
         Log.d("DEBUG", "Adapter created");
-        linearLayoutManager = new LinearLayoutManager(Menu_Principal.this, LinearLayoutManager.VERTICAL, false);
-        linearLayoutManager.setReverseLayout(true); //listar desde la ultima tarea creada a la ultima
-        linearLayoutManager.setStackFromEnd(true); //La lista empieza por arriba
-        ReciclerViewTareasPendientes.setLayoutManager(linearLayoutManager);
+        linearLayoutManager1 = new LinearLayoutManager(Menu_Principal.this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager1.setReverseLayout(true); //listar desde la ultima tarea creada a la ultima
+        linearLayoutManager1.setStackFromEnd(true); //La lista empieza por arriba
+        linearLayoutManager2 = new LinearLayoutManager(Menu_Principal.this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager2.setReverseLayout(true); //listar desde la ultima tarea creada a la ultima
+        linearLayoutManager2.setStackFromEnd(true); //La lista empieza por arriba
+        ReciclerViewTareasPendientes.setLayoutManager(linearLayoutManager1);
         ReciclerViewTareasPendientes.setAdapter(AdapterPendientes);
+        ReciclerViewTareasCompletadas.setLayoutManager(linearLayoutManager2);
+        ReciclerViewTareasCompletadas.setAdapter(AdapterCompletadas);
         Log.d("DEBUG", "RecyclerView set up completed");
     }
 
@@ -334,6 +426,10 @@ public class Menu_Principal extends AppCompatActivity {
             AdapterPendientes.startListening();
             Log.d("DEBUG", "Adapter started listening");
         }
+        if (AdapterCompletadas != null) {
+            AdapterCompletadas.startListening();
+            Log.d("DEBUG", "Adapter started listening");
+        }
     }
 
     @Override
@@ -341,6 +437,10 @@ public class Menu_Principal extends AppCompatActivity {
         super.onStop();
         if (AdapterPendientes != null) {
             AdapterPendientes.stopListening();
+            Log.d("DEBUG", "Adapter stopped listening");
+        }
+        if (AdapterCompletadas != null) {
+            AdapterCompletadas.stopListening();
             Log.d("DEBUG", "Adapter stopped listening");
         }
     }
