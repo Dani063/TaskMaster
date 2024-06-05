@@ -5,7 +5,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SoundEffectConstants;
@@ -47,7 +49,7 @@ public class Menu_Principal extends AppCompatActivity {
 
     Button Btn_Ajustes;
     FloatingActionButton AgregaNota;
-    TextView NombresPrincipal, /*CorreoPrincipal,*/ FraseAnimoTXT;
+    TextView NombresPrincipal, /*CorreoPrincipal,*/ FraseAnimoTXT, TareasCompletadasTXT;
     ProgressBar progressBarDatos;
     DatabaseReference Usuarios;
     FirebaseUser firebaseUser;
@@ -86,6 +88,7 @@ public class Menu_Principal extends AppCompatActivity {
         progressBarDatos = findViewById(R.id.progressBar);
         AgregaNota = findViewById(R.id.AgregaNota);
         FraseAnimoTXT = findViewById(R.id.FraseAnimoTXT);
+        TareasCompletadasTXT = findViewById(R.id.TareasCompletadasTXT);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -108,8 +111,8 @@ public class Menu_Principal extends AppCompatActivity {
                 startActivity(new Intent(Menu_Principal.this, CrearTarea.class));
             }
         });
+        applyPreferences();
     }
-
     private void EscribirFraseAnimo(){
         if (firebaseUser != null) {
             String userId = firebaseUser.getUid();
@@ -129,7 +132,7 @@ public class Menu_Principal extends AppCompatActivity {
                     if (count == 0) {
                         FraseAnimoTXT.setText("No tienes tares pendientes! Para crear una nueva, presiona el botón +");
                     } else if (count == 1) {
-                        FraseAnimoTXT.setText("Tienes " + count + " tarea pendientes!");
+                        FraseAnimoTXT.setText("Tienes " + count + " tarea pendiente!");
                     }
                     else {
                         FraseAnimoTXT.setText("Tienes " + count + " tareas pendientes!");
@@ -386,7 +389,6 @@ public class Menu_Principal extends AppCompatActivity {
         ReciclerViewTareasCompletadas.setAdapter(AdapterCompletadas);
         Log.d("DEBUG", "RecyclerView set up completed");
     }
-
     private void EliminarTarea(String tid){
         AlertDialog.Builder builder = new AlertDialog.Builder(Menu_Principal.this);
         builder.setTitle("Eliminar la tarea");
@@ -418,6 +420,13 @@ public class Menu_Principal extends AppCompatActivity {
         });
         builder.create().show();
     }
+    private void applyPreferences() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean mostrarCompletadas = preferences.getBoolean("mostrarCompletadas", true);
+
+        ReciclerViewTareasCompletadas.setVisibility(mostrarCompletadas ? View.VISIBLE : View.GONE);
+        TareasCompletadasTXT.setVisibility(mostrarCompletadas ? View.VISIBLE : View.GONE);
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -431,7 +440,6 @@ public class Menu_Principal extends AppCompatActivity {
             Log.d("DEBUG", "Adapter started listening");
         }
     }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -444,7 +452,6 @@ public class Menu_Principal extends AppCompatActivity {
             Log.d("DEBUG", "Adapter stopped listening");
         }
     }
-
     private void ComprobarSesionNull(){
         if (firebaseUser!=null){
             CargaDatos();
@@ -453,5 +460,4 @@ public class Menu_Principal extends AppCompatActivity {
             finish();
         }
     }
-
 }

@@ -78,5 +78,6 @@
     <!-- AJUSTES -->
     <string name="AjustesTXT">Ajustes</string>
     <string name="CerrarSesion">Cerrar sesion</string>
+    <string name="MostarTareasCompletada">Mostrar las tareas completadas</string>
 
 </resources>

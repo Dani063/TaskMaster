@@ -70,15 +70,6 @@
                         android:text="@string/FraseAnimoTXT"
                         android:fontFamily="@font/robotoblack"
                         android:textSize="20sp"/>
-                    <Button
-                        android:id="@+id/Btn_Ajustes"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="-110dp"
-                        android:layout_width="80dp"
-                        android:layout_height="46dp"
-                        android:text="@string/Btn_Ajustes"
-                        android:drawableRight="@drawable/icons8_ajustes"/>
-
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -109,6 +100,23 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:orientation="horizontal"
+        android:gravity="right">
+
+        <Button
+            android:id="@+id/Btn_Ajustes"
+            android:layout_width="80dp"
+            android:layout_height="46dp"
+            android:text="@string/Btn_Ajustes"
+            android:drawableRight="@drawable/icons8_ajustes"/>
+
+    </LinearLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/AgregaNota"
