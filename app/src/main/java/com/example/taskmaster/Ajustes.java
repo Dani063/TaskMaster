@@ -73,4 +73,11 @@ public class Ajustes extends AppCompatActivity {
         startActivity(new Intent(Ajustes.this,MainActivity.class));
         Toast.makeText(this, "Cerrando sesion", Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(Ajustes.this, Menu_Principal.class));
+    }
+
 }
