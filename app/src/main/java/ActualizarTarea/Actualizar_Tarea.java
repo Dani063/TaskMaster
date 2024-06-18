@@ -4,10 +4,13 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,22 +27,30 @@ import com.example.taskmaster.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
+import Objects.Subtarea;
 import Objects.Tarea;
 
 public class Actualizar_Tarea extends AppCompatActivity {
 
     TextView Uid_Usuario_A, Correo_usuario_A, Fecha_hora_Actual_A, Fecha_A, Tid_A, Estado_A;
     EditText Titulo_A, Descripcion_A;
+    LinearLayout subtareasContainer;
     Button Btn_Calendario_A, Guardar_A;
     FirebaseAuth firebaseAuth;
     ProgressDialog progressDialog;
 
     String tid, uid_usuario, correo_usuario, fecha_hora_actual, fecha, titulo, descripcion, estado, filtro;
+    List<EditText> subtareasList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +144,7 @@ public class Actualizar_Tarea extends AppCompatActivity {
         Descripcion_A = findViewById(R.id.Descripcion_A);
         Btn_Calendario_A = findViewById(R.id.Btn_Calendario_A);
         Guardar_A = findViewById(R.id.Guardar_A);
+        subtareasContainer = findViewById(R.id.subtareasContainer);
         Tid_A = findViewById(R.id.Tid_A);
         Estado_A = findViewById(R.id.Estado_A);
         progressDialog = new ProgressDialog(this);
@@ -150,8 +162,27 @@ public class Actualizar_Tarea extends AppCompatActivity {
         descripcion = intent.getString("descripcion");
         estado = intent.getString("estado");
         correo_usuario = firebaseAuth.getCurrentUser().getEmail();
-    }
 
+        // Recuperar subtareas de Firebase
+        DatabaseReference subtareasRef = FirebaseDatabase.getInstance().getReference().child("Subtareas");
+        subtareasRef.orderByChild("tid").equalTo(tid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot subtareaSnapshot : snapshot.getChildren()) {
+                    String subtareaTexto = subtareaSnapshot.child("nombre").getValue(String.class);
+                    agregarSubtarea(subtareaTexto);
+                }
+                // Añadir una nueva subtarea vacía al final
+                agregarSubtarea(null);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Actualizar_Tarea.this, "Error al cargar subtareas: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
     private void SetearDatos() {
         Uid_Usuario_A.setText(uid_usuario);
         Fecha_A.setText(fecha);
@@ -165,9 +196,7 @@ public class Actualizar_Tarea extends AppCompatActivity {
     private void ActualizarTarea() {
         progressDialog.setMessage("Actualizando Tarea...");
         progressDialog.show();
-        DatabaseReference databaseReference;
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
         if (descripcion.isEmpty()){
             descripcion = "Vacio";
@@ -178,25 +207,95 @@ public class Actualizar_Tarea extends AppCompatActivity {
             Fecha_A.setText(fecha);
         }
 
-        if (!uid_usuario.isEmpty() && !tid.equals("")&& !fecha_hora_actual.isEmpty() && !fecha.isEmpty() &&
-                !titulo.isEmpty() && !descripcion.isEmpty() && !estado.isEmpty()){
-            //crear objeto tarea
-            Tarea tarea = new Tarea(titulo,descripcion,fecha,fecha_hora_actual,estado,tid,uid_usuario,filtro);
-            //crear tarea en firebase
-            databaseReference.child("Tareas").child(tid).setValue(tarea).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    progressDialog.dismiss();
-                    Toast.makeText(Actualizar_Tarea.this,"Tarea actualizada!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Actualizar_Tarea.this, Menu_Principal.class));
+        // Eliminar subtareas antiguas y luego continuar con la actualización
+        EliminarAntiguas(new OnSubtareasEliminadasListener() {
+            @Override
+            public void onSubtareasEliminadas() {
+                // Crear lista de subtareas
+                List<Subtarea> subtareasObjList = new ArrayList<>();
+                for (EditText subtareaField : subtareasList) {
+                    String subtareaTexto = subtareaField.getText().toString().trim();
+                    if (!subtareaTexto.isEmpty()) {
+                        String sid = databaseReference.push().getKey();
+                        if (sid != null) {
+                            Subtarea subtareaObj = new Subtarea(subtareaTexto, tid, sid);
+                            subtareasObjList.add(subtareaObj);
+                            databaseReference.child("Subtareas").child(sid).setValue(subtareaObj);
+                        }
+                    }
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressDialog.dismiss();
-                    Toast.makeText(Actualizar_Tarea.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                if (!uid_usuario.isEmpty() && !tid.equals("") && !fecha_hora_actual.isEmpty() && !fecha.isEmpty() &&
+                        !titulo.isEmpty() && !descripcion.isEmpty() && !estado.isEmpty()){
+                    // Crear objeto tarea
+                    Tarea tarea = new Tarea(titulo, descripcion, fecha, fecha_hora_actual, estado, tid, uid_usuario, filtro, subtareasObjList);
+                    // Crear tarea en Firebase
+                    databaseReference.child("Tareas").child(tid).setValue(tarea).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            progressDialog.dismiss();
+                            Toast.makeText(Actualizar_Tarea.this, "Tarea actualizada!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Actualizar_Tarea.this, Menu_Principal.class));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(Actualizar_Tarea.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
     }
+    private void agregarSubtarea(String subtareaTexto) {
+        EditText nuevaSubtarea = new EditText(this);
+        nuevaSubtarea.setHint("Subtarea");
+        if (subtareaTexto != null) {
+            nuevaSubtarea.setText(subtareaTexto);
+        }
+
+        nuevaSubtarea.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count == 1 && subtareasContainer.indexOfChild(nuevaSubtarea) == subtareasContainer.getChildCount() - 1) {
+                    agregarSubtarea(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        subtareasContainer.addView(nuevaSubtarea);
+        subtareasList.add(nuevaSubtarea);
+    }
+
+            private void EliminarAntiguas(OnSubtareasEliminadasListener listener) {
+                DatabaseReference subtareasRef = FirebaseDatabase.getInstance().getReference().child("Subtareas");
+                subtareasRef.orderByChild("tid").equalTo(tid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot subtareaSnapshot : snapshot.getChildren()) {
+                            subtareaSnapshot.getRef().removeValue();
+                        }
+                        // Llamar al listener cuando se complete la eliminación
+                        listener.onSubtareasEliminadas();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(Actualizar_Tarea.this, "Error al eliminar subtareas: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+    public interface OnSubtareasEliminadasListener {
+        void onSubtareasEliminadas();
+    }
+
 }
+

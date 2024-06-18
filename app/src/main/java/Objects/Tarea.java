@@ -1,5 +1,7 @@
 package Objects;
 
+import java.util.List;
+
 public class Tarea {
     private String uid;
     private String tid;
@@ -9,6 +11,7 @@ public class Tarea {
     private String fechaCreacion;
     private String estado;
     private String filtro;
+    public List<Subtarea> subtareas;
 
 
     public Tarea() {
@@ -17,7 +20,7 @@ public class Tarea {
 
 
 
-    public Tarea(String titulo, String descripcion, String fecha, String fechaCreacion, String estado, String tid, String uid, String filtro) {
+    public Tarea(String titulo, String descripcion, String fecha, String fechaCreacion, String estado, String tid, String uid, String filtro, List<Subtarea> subtareas) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fecha = fecha;
@@ -26,9 +29,23 @@ public class Tarea {
         this.tid = tid;
         this.uid = uid;
         this.filtro = filtro;
+        this.subtareas = subtareas;
+    }
+
+    public void AddSubtarea(Subtarea subtarea){
+        subtareas.add(subtarea);
     }
 
     // Getters y setters
+
+    public List<Subtarea> getSubtareas() {
+        return subtareas;
+    }
+
+    public void setSubtareas(List<Subtarea> subtareas) {
+        this.subtareas = subtareas;
+    }
+
     public String getFiltro() {
         return filtro;
     }

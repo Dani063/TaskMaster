@@ -5,10 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,15 +29,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
+import Objects.Subtarea;
 import Objects.Tarea;
 
 public class CrearTarea extends AppCompatActivity {
 
+    LinearLayout subtareasContainer;
+    List<EditText> subtareasList = new ArrayList<>();
     TextView Uid_Usuario, Correo_usuario, Fecha_hora_actual, Fecha, Estado;
     Button Btn_Calendario, Guardar;
     EditText Titulo, Descripcion;
@@ -57,6 +65,7 @@ public class CrearTarea extends AppCompatActivity {
 
         InicializarVariables();
         ObtenerDatos();
+        addSubTarea();
 
         Guardar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +116,33 @@ public class CrearTarea extends AppCompatActivity {
 
     }
 
+    private void addSubTarea() {
+        final EditText CajaSubtarea = new EditText(this);
+        CajaSubtarea.setHint("Subtarea");
+        CajaSubtarea.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        CajaSubtarea.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().isEmpty() && subtareasContainer.indexOfChild(CajaSubtarea) == subtareasContainer.getChildCount() - 1) {
+                    addSubTarea();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        subtareasContainer.addView(CajaSubtarea);
+        subtareasList.add(CajaSubtarea);
+    }
+
     private void InicializarVariables() {
         //Text view
         Uid_Usuario = findViewById(R.id.Uid_Usuario);
@@ -124,6 +160,7 @@ public class CrearTarea extends AppCompatActivity {
         //Otras
         progressDialog = new ProgressDialog(this);
         firebaseAuth = FirebaseAuth.getInstance();
+        subtareasContainer = findViewById(R.id.subtareasContainer);
 
     }
     private void ObtenerDatos() {
@@ -163,7 +200,6 @@ public class CrearTarea extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         tid = databaseReference.push().getKey();
 
-
         if (descripcion.isEmpty()){
             descripcion = "Vacio";
             Descripcion.setText(descripcion);
@@ -174,22 +210,34 @@ public class CrearTarea extends AppCompatActivity {
         }
 
         if (!uid.isEmpty() && !tid.equals("")&& !fechacreacion.isEmpty() && !fecha.isEmpty() &&
-                !titulo.isEmpty() && !descripcion.isEmpty() && !estado.isEmpty()){
+                !titulo.isEmpty() && !descripcion.isEmpty() && !estado.isEmpty()) {
+            List<Subtarea> subtareasObjList = new ArrayList<>();
+            for (EditText subtareaField : subtareasList) {
+                String subtareaTexto = subtareaField.getText().toString().trim();
+                if (!subtareaTexto.isEmpty()) {
+                    String sid = databaseReference.push().getKey();
+                    if (sid != null) {
+                        Subtarea subtareaObj = new Subtarea(subtareaTexto, tid, sid);
+                        subtareasObjList.add(subtareaObj);
+                        databaseReference.child("Subtareas").child(sid).setValue(subtareaObj);
+                    }
+                }
+            }
             //crear objeto tarea
-            Tarea tarea = new Tarea(titulo,descripcion,fecha,fechacreacion,estado,tid,uid,filtro);
+            Tarea tarea = new Tarea(titulo, descripcion, fecha, fechacreacion, estado, tid, uid, filtro, subtareasObjList);
             //crear tarea en firebase
             databaseReference.child("Tareas").child(tid).setValue(tarea).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
                     progressDialog.dismiss();
-                    Toast.makeText(CrearTarea.this,"Nueva Tarea!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(CrearTarea.this,Menu_Principal.class));
+                    Toast.makeText(CrearTarea.this, "Nueva Tarea!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CrearTarea.this, Menu_Principal.class));
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     progressDialog.dismiss();
-                    Toast.makeText(CrearTarea.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CrearTarea.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }

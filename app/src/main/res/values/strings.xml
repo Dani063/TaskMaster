@@ -43,6 +43,7 @@
     <string name="Estado">No finalizado</string>
     <string name="Btn_RegistraNota">Guardar</string>
     <string name="CrearTarea">Crear tarea</string>
+    <string name="SubtareaTXT">Introduce subtarea</string>
 
     <!-- ITEM NOTA -->
     <string name="fecha_hora_actualItem">Fecha y hora actual</string>
