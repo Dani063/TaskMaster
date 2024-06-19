@@ -1,7 +1,6 @@
 package com.example.taskmaster;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,7 +30,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,7 +38,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 import ActualizarTarea.Actualizar_Tarea;
+import Adapter.SubtareaAdapter;
+import Objects.Subtarea;
 import Objects.Tarea;
 import ViewHolder.TareaViewHolder;
 
@@ -53,7 +54,7 @@ public class Menu_Principal extends AppCompatActivity {
     ProgressBar progressBarDatos;
     DatabaseReference Usuarios;
     FirebaseUser firebaseUser;
-    RecyclerView ReciclerViewTareasPendientes, ReciclerViewTareasCompletadas;
+    RecyclerView ReciclerViewTareasPendientes, ReciclerViewTareasCompletadas, ReciclerViewSubtareas;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference BASE_DE_DATOS;
     Dialog dialog;
@@ -214,7 +215,28 @@ public class Menu_Principal extends AppCompatActivity {
                 tareaViewHolder.setOnClickListener(new TareaViewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(Menu_Principal.this, "on item click", Toast.LENGTH_SHORT).show();
+                        // Crear y configurar el diálogo
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+                        View dialogView = inflater.inflate(R.layout.subtareas, null);
+                        builder.setView(dialogView);
+
+                        // Inicializar vistas del diálogo
+                        TextView tituloSubtareas = dialogView.findViewById(R.id.SubtareasTXT);
+                        RecyclerView recyclerViewSubtareas = dialogView.findViewById(R.id.RecyclerViewSubtareas);
+
+                        // Configurar RecyclerView
+                        recyclerViewSubtareas.setLayoutManager(new LinearLayoutManager(view.getContext()));
+                        List<Subtarea> subtareas = getItem(position).getSubtareas();
+                        SubtareaAdapter adapter = new SubtareaAdapter(subtareas);
+                        recyclerViewSubtareas.setAdapter(adapter);
+
+                        // Establecer el título del diálogo
+                        tituloSubtareas.setText("Subtareas de " + getItem(position).getTitulo());
+
+                        // Mostrar el diálogo
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
                     }
 
                     @Override

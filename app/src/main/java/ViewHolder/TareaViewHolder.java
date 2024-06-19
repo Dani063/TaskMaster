@@ -1,12 +1,16 @@
 package ViewHolder;
 
+
 import android.animation.Animator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -14,7 +18,11 @@ import com.example.taskmaster.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.List;
+
+import Objects.Subtarea;
 import Objects.Tarea;
+import Adapter.SubtareaAdapter;
 
 public class TareaViewHolder extends RecyclerView.ViewHolder {
     View mView;
@@ -24,7 +32,7 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
 
 
     public interface ClickListener{
-        void onItemClick(View view, int position);
+        public void onItemClick(View view, int position);
         void onItemLongClick(View view, int position);
     }
 
@@ -118,5 +126,46 @@ public class TareaViewHolder extends RecyclerView.ViewHolder {
                 databaseReference.child("filtro").setValue(uid+"/No finalizado");
             }
         });
+    }
+}
+
+class TareaClickListener implements TareaViewHolder.ClickListener {
+    private Context context;
+    private List<Tarea> tareas;
+
+    public TareaClickListener(Context context, List<Tarea> tareas) {
+        this.context = context;
+        this.tareas = tareas;
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        // Crear y configurar el diálogo
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.subtareas, null);
+        builder.setView(dialogView);
+
+        // Inicializar vistas del diálogo
+        TextView tituloSubtareas = dialogView.findViewById(R.id.SubtareasTXT);
+        RecyclerView recyclerViewSubtareas = dialogView.findViewById(R.id.RecyclerViewSubtareas);
+
+        // Configurar RecyclerView
+        recyclerViewSubtareas.setLayoutManager(new LinearLayoutManager(context));
+        List<Subtarea> subtareas = tareas.get(position).getSubtareas();
+        SubtareaAdapter adapter = new SubtareaAdapter(subtareas);
+        recyclerViewSubtareas.setAdapter(adapter);
+
+        // Establecer el título del diálogo
+        tituloSubtareas.setText("Subtareas de " + tareas.get(position).getTitulo());
+
+        // Mostrar el diálogo
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+
     }
 }

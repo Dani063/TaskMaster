@@ -43,9 +43,8 @@
     <string name="Estado">No finalizado</string>
     <string name="Btn_RegistraNota">Guardar</string>
     <string name="CrearTarea">Crear tarea</string>
-    <string name="SubtareaTXT">Introduce subtarea</string>
 
-    <!-- ITEM NOTA -->
+    <!-- ITEM TAREA -->
     <string name="fecha_hora_actualItem">Fecha y hora actual</string>
     <string name="tituloItem">Titulo</string>
     <string name="descripcionItem">Descripcion</string>
@@ -62,6 +61,16 @@
     <string name="descripcionOpcion">Descripcion</string>
     <string name="fechaOpcion">dd/mm/aaaa</string>
     <string name="estadoOpcion">No finalizado</string>
+
+    <!-- SUBTAREAS TAREA -->
+    <string name="SubtareaTXT">Subtareas de --</string>
+    <string name="tituloSubtarea">Titulo</string>
+    <string name="estadoSubtarea">No finalizado</string>
+
+    <!-- ITEM SUBTAREA -->
+    <string name="tituloItemS">Titulo</string>
+    <string name="estadoItemS">No finalizado</string>
+    <string name="Sid_SubtareaItem">Sid de la subtarea</string>
 
     <!-- ACTUALIZAR TAREA -->
     <string name="Tid_A">Tid de la tarea</string>
