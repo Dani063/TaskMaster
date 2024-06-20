@@ -455,7 +455,6 @@ public class Menu_Principal extends AppCompatActivity {
         });
         builder.create().show();
     }
-
     private void handleItemClick(View view, int position, FirebaseRecyclerAdapter<Tarea, TareaViewHolder> adapter) {
         // Crear y configurar el diálogo
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -483,7 +482,6 @@ public class Menu_Principal extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
     private void applyPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean mostrarCompletadas = preferences.getBoolean("mostrarCompletadas", true);
@@ -575,9 +573,10 @@ public class Menu_Principal extends AppCompatActivity {
         int añoTarea = calendar.get(Calendar.YEAR);
 
         // Comparar fechas
-        if (mesTarea == mesHoy && añoTarea == añoHoy) {
+        if (mesTarea == mesHoy && añoTarea == añoHoy && !tarea.isNotificado()) {
             if (diaTarea == diaHoy + 1) {
-                System.out.println("MANDO TAREA PRRROOOO");
+                tarea.setNotificado(true);
+                BASE_DE_DATOS.child(tarea.getTid()).setValue(tarea);
                 sendNotification(tarea.getTitulo(), fecha);
             }
         }

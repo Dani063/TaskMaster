@@ -13,6 +13,7 @@ public class Tarea {
     private String filtro;
     public List<Subtarea> subtareas;
 
+    private boolean Notificado;
 
     public Tarea() {
         // Constructor vacío requerido para Firebase
@@ -30,6 +31,7 @@ public class Tarea {
         this.uid = uid;
         this.filtro = filtro;
         this.subtareas = subtareas;
+        Notificado = false;
     }
 
     public void AddSubtarea(Subtarea subtarea){
@@ -118,4 +120,13 @@ public class Tarea {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+    public boolean isNotificado() {
+        return Notificado;
+    }
+
+    public void setNotificado(boolean notificado) {
+        Notificado = notificado;
+    }
 }
+
+
