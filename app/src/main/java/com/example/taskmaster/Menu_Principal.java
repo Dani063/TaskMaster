@@ -1,5 +1,7 @@
 package com.example.taskmaster;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -38,14 +40,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ActualizarTarea.Actualizar_Tarea;
 import Adapter.SubtareaAdapter;
 import Objects.Subtarea;
 import Objects.Tarea;
 import ViewHolder.TareaViewHolder;
+import network.ApiClient;
+import network.NotificationRequest;
+import network.NotificationService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Menu_Principal extends AppCompatActivity {
 
@@ -105,6 +118,7 @@ public class Menu_Principal extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Menu_Principal.this, Ajustes.class));
+
             }
         });
         AgregaNota.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +189,9 @@ public class Menu_Principal extends AppCompatActivity {
                                 for (DataSnapshot tareaSnapshot : dataSnapshot.getChildren()) {
                                     Tarea tarea = tareaSnapshot.getValue(Tarea.class);
                                     System.out.println("Tarea: " + tarea.getTitulo());
+                                    if (tarea.getEstado().equals("No finalizado")){
+                                        ComprobarFecha(tarea);
+                                    }
                                 }
                             } else {
                                 System.out.println("No hay tareas para este usuario.");
@@ -308,7 +325,7 @@ public class Menu_Principal extends AppCompatActivity {
                     @Override
                     public void onItemClick(View view, int position) {
                         //Toast.makeText(Menu_Principal.this, "on item click", Toast.LENGTH_SHORT).show();
-                        handleItemClick(view, position, AdapterPendientes);
+                        handleItemClick(view, position, AdapterCompletadas);
                     }
 
                     @Override
@@ -505,6 +522,64 @@ public class Menu_Principal extends AppCompatActivity {
         }else {
             startActivity(new Intent(Menu_Principal.this,MainActivity.class));
             finish();
+        }
+    }
+    public void sendNotification(String titulo, String fecha) {
+        NotificationService service = ApiClient.getRetrofitInstance().create(NotificationService.class);
+
+        String email = firebaseUser.getEmail();
+
+        NotificationRequest request = new NotificationRequest(email, "Fecha limite de tarea",
+                "Hola! Tu tarea " + titulo + " está a punto de finalizar, tienes hasta " + fecha + " para completarla.");
+        Call<Void> call = service.sendNotification(request);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(Menu_Principal.this, "Notificación enviada", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Menu_Principal.this, "Error al enviar notificación", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "Error en la solicitud"+ t.getMessage());
+                Toast.makeText(Menu_Principal.this, "Error al enviar notificación", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+    private void ComprobarFecha(Tarea tarea){
+        String fecha = tarea.getFecha();
+        Calendar hoy = Calendar.getInstance();
+        int diaHoy = hoy.get(Calendar.DAY_OF_MONTH);
+        int mesHoy = hoy.get(Calendar.MONTH) + 1;  // Sumar 1 porque Calendar.MONTH es base 0 (enero es 0)
+        int añoHoy = hoy.get(Calendar.YEAR);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date date;
+        try {
+            date = sdf.parse(fecha);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;  // Manejo de error en caso de que la fecha no sea válida
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        int diaTarea = calendar.get(Calendar.DAY_OF_MONTH);
+        int mesTarea = calendar.get(Calendar.MONTH) + 1;
+        int añoTarea = calendar.get(Calendar.YEAR);
+
+        // Comparar fechas
+        if (mesTarea == mesHoy && añoTarea == añoHoy) {
+            if (diaTarea == diaHoy + 1) {
+                System.out.println("MANDO TAREA PRRROOOO");
+                sendNotification(tarea.getTitulo(), fecha);
+            }
         }
     }
 }

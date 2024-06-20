@@ -77,7 +77,7 @@ public class SubtareaAdapter extends RecyclerView.Adapter<SubtareaAdapter.Subtar
                 }
             });
             // Actualizar el estado de la subtarea en la base de datos al cambiar el estado de la checkbox
-            
+
             subtareaCheckBox.setOnCheckedChangeListener((buttonView, isChecked) ->{
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subtareas").child(subtarea.getSid());
                 if (isChecked) {

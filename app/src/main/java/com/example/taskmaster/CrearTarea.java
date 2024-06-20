@@ -96,13 +96,13 @@ public class CrearTarea extends AppCompatActivity {
                             diaF = String.valueOf(dayOfMonth);
                         }
                         //Obtener el mes
-                        int Mes = month + 1;
+                        int Mes = month + 1;//se escriben en base 0 asi que hay que sumar 1
                         if (Mes<10){
-                            mesF = "0"+String.valueOf(month);
+                            mesF = "0"+String.valueOf(Mes);
                         }
                         //Antes: 12/8/2002 - Ahora 12/08/2002
                         else {
-                            mesF = String.valueOf(month);
+                            mesF = String.valueOf(Mes);
                         }
 
                         //Set fecha en textview
