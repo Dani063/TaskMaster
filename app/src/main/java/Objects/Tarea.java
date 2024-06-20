@@ -36,6 +36,15 @@ public class Tarea {
         subtareas.add(subtarea);
     }
 
+    public Subtarea getSubtarea(String sid){
+        for (Subtarea subtarea : subtareas) {
+            if (subtarea.getSid().equals(sid)) {
+                return subtarea;
+            }
+        }
+        return null;
+    }
+
     // Getters y setters
 
     public List<Subtarea> getSubtareas() {

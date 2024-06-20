@@ -156,12 +156,14 @@ class TareaClickListener implements TareaViewHolder.ClickListener {
         SubtareaAdapter adapter = new SubtareaAdapter(subtareas);
         recyclerViewSubtareas.setAdapter(adapter);
 
-        // Establecer el título del diálogo
-        tituloSubtareas.setText("Subtareas de " + tareas.get(position).getTitulo());
+        //Establecer el estado del checkbox
+        String estadoS = tareas.get(position).getEstado();
 
         // Mostrar el diálogo
         AlertDialog dialog = builder.create();
         dialog.show();
+
+
     }
 
     @Override

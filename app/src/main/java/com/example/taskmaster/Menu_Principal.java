@@ -38,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ActualizarTarea.Actualizar_Tarea;
@@ -215,28 +216,7 @@ public class Menu_Principal extends AppCompatActivity {
                 tareaViewHolder.setOnClickListener(new TareaViewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        // Crear y configurar el diálogo
-                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                        LayoutInflater inflater = LayoutInflater.from(view.getContext());
-                        View dialogView = inflater.inflate(R.layout.subtareas, null);
-                        builder.setView(dialogView);
-
-                        // Inicializar vistas del diálogo
-                        TextView tituloSubtareas = dialogView.findViewById(R.id.SubtareasTXT);
-                        RecyclerView recyclerViewSubtareas = dialogView.findViewById(R.id.RecyclerViewSubtareas);
-
-                        // Configurar RecyclerView
-                        recyclerViewSubtareas.setLayoutManager(new LinearLayoutManager(view.getContext()));
-                        List<Subtarea> subtareas = getItem(position).getSubtareas();
-                        SubtareaAdapter adapter = new SubtareaAdapter(subtareas);
-                        recyclerViewSubtareas.setAdapter(adapter);
-
-                        // Establecer el título del diálogo
-                        tituloSubtareas.setText("Subtareas de " + getItem(position).getTitulo());
-
-                        // Mostrar el diálogo
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                        handleItemClick(view, position, AdapterPendientes);
                     }
 
                     @Override
@@ -327,7 +307,8 @@ public class Menu_Principal extends AppCompatActivity {
                 tareaViewHolder.setOnClickListener(new TareaViewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(Menu_Principal.this, "on item click", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Menu_Principal.this, "on item click", Toast.LENGTH_SHORT).show();
+                        handleItemClick(view, position, AdapterPendientes);
                     }
 
                     @Override
@@ -418,6 +399,7 @@ public class Menu_Principal extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Query query =BASE_DE_DATOS.orderByChild("tid").equalTo(tid);
+                Query query2 = FirebaseDatabase.getInstance().getReference("Subtareas").orderByChild("tid").equalTo(tid);
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -425,6 +407,20 @@ public class Menu_Principal extends AppCompatActivity {
                             ds.getRef().removeValue();
                         }
                         Toast.makeText(Menu_Principal.this, "Tarea eliminada", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(Menu_Principal.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                query2.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds : snapshot.getChildren()){
+                            ds.getRef().removeValue();
+                        }
                     }
 
                     @Override
@@ -442,6 +438,35 @@ public class Menu_Principal extends AppCompatActivity {
         });
         builder.create().show();
     }
+
+    private void handleItemClick(View view, int position, FirebaseRecyclerAdapter<Tarea, TareaViewHolder> adapter) {
+        // Crear y configurar el diálogo
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        View dialogView = inflater.inflate(R.layout.subtareas, null);
+        builder.setView(dialogView);
+
+        // Inicializar vistas del diálogo
+        TextView tituloSubtareas = dialogView.findViewById(R.id.SubtareasTXT);
+        RecyclerView recyclerViewSubtareas = dialogView.findViewById(R.id.RecyclerViewSubtareas);
+
+        // Configurar RecyclerView
+        recyclerViewSubtareas.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        List<Subtarea> subtareas = adapter.getItem(position).getSubtareas();
+        if (subtareas == null) {
+            subtareas = new ArrayList<>(); // Inicializar lista vacía si es null
+        }
+        SubtareaAdapter subtareaAdapter = new SubtareaAdapter(subtareas);
+        recyclerViewSubtareas.setAdapter(subtareaAdapter);
+
+        // Establecer el título del diálogo
+        tituloSubtareas.setText("Subtareas de " + adapter.getItem(position).getTitulo());
+
+        // Mostrar el diálogo
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void applyPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean mostrarCompletadas = preferences.getBoolean("mostrarCompletadas", true);
