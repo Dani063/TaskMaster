@@ -176,7 +176,7 @@ public class Menu_Principal extends AppCompatActivity {
                     FraseAnimoTXT.setVisibility(View.VISIBLE);
                     //CorreoPrincipal.setVisibility(View.VISIBLE);
                     //Obtener los datos
-                    String nombres = "Bienvenido " + snapshot.child("nombre").getValue() + " !";
+                    String nombres = "Hola " + snapshot.child("nombre").getValue() + " !";
                     String correo = "" + snapshot.child("correo").getValue();
                     //Set Datos
                     NombresPrincipal.setText(nombres);

@@ -16,7 +16,7 @@
 
     <!-- Menu Principal -->
 
-    <string name="BienvenidoPrincipal">Bienvenido</string>
+    <string name="BienvenidoPrincipal">Hola</string>
     <string name="NombresPrincipal"> -- </string>
     <string name="CorreoPrincipal"> -- </string>
     <string name="AgregaNota">+</string>
